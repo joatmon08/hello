@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -13,6 +14,7 @@ func main() {
 
 	server8001 := mux.NewRouter()
 	server8001.HandleFunc("/hello", hello)
+	server8001.HandleFunc("/phone", phone)
 	server8001.NotFoundHandler = http.HandlerFunc(notFound)
 
 	server8002 := mux.NewRouter()
@@ -36,7 +38,8 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 		"method": r.Method,
 		"host":   r.Host,
 	}).Error("404 not found")
-	w.Write([]byte("404 Not Found"))
+	w.WriteHeader(http.StatusNotFound)
+	w.Write([]byte("API Endpoint Not Found"))
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
@@ -55,4 +58,27 @@ func health(w http.ResponseWriter, r *http.Request) {
 		"host":   r.Host,
 	}).Info("request made")
 	w.Write([]byte("I'm healthy!"))
+}
+
+func phone(w http.ResponseWriter, r *http.Request) {
+	log.WithFields(log.Fields{
+		"uri":    r.URL.Path,
+		"method": r.Method,
+		"host":   r.Host,
+	}).Info("request made")
+	request, _ := http.NewRequest("GET", "http://nginx", bytes.NewBuffer(nil))
+	client := &http.Client{}
+	_, err := client.Do(request)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"uri":    r.URL.Path,
+			"method": r.Method,
+			"host":   r.Host,
+			"err":    err,
+		}).Error("request made to http://nginx failed")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("I could not connect to http://nginx!"))
+	} else {
+		w.Write([]byte("I connected to http://nginx!"))
+	}
 }

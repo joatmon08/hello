@@ -1,9 +1,7 @@
 FROM alpine:latest
 
-RUN mkdir /scripts
+COPY main /usr/local/bin/
 
-COPY main /scripts/
+RUN chmod +x /usr/local/bin/main
 
-RUN chmod +x /scripts/main
-
-CMD /scripts/main
+ENTRYPOINT [ "main" ]

@@ -1,0 +1,34 @@
+---
+version: 2
+
+defaults: &defaults
+  docker:
+    - image: circleci/golang:1.10
+  working_directory: /go/src/github.com/joatmon08/hello
+  environment:
+    LIBRARY: joatmon08
+    CONTAINER_NAME: hello
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install dependencies
+          command: dep ensure
+      - run:
+          name: Build container
+          command: |
+            echo $DOCKER_HUB_KEY | docker login -u $DOCKER_HUB_USER --password-stdin
+            bash build.sh
+            docker tag $LIBRARY/$CONTAINER_NAME:latest $LIBRARY/$CONTAINER_NAME:$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
+            docker push $LIBRARY/$CONTAINER_NAME:$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
+            docker push $LIBRARY/$CONTAINER_NAME:latest
+
+workflows:
+  version: 2
+  hello:
+    jobs:
+      - build

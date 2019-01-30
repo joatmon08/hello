@@ -19,7 +19,7 @@ jobs:
           command: dep ensure
       - run:
           name: Test application
-          command: go test github.com/joatmon08/hello
+          command: go test github.com/joatmon08/hello/test/unit
 
   build:
     <<: *defaults

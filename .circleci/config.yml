@@ -72,7 +72,7 @@ jobs:
       - run:
           name: Test container
           command: |
-            source version.env
+            source /tmp/workspace/version.env
             echo $DOCKER_HUB_KEY | docker login -u $DOCKER_HUB_USER --password-stdin
             docker pull $LIBRARY/$CONTAINER_NAME:$IMAGE_VERSION
             CID="$(docker run -d -v /var/run/docker.sock:/var/run/docker.sock:ro $LIBRARY/$CONTAINER_NAME:$IMAGE_VERSION)"

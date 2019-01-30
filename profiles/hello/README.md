@@ -1,0 +1,1 @@
+Validate image used for joatmon08/hello application

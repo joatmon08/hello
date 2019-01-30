@@ -1,4 +1,4 @@
-package main
+package test
 
 import (
 	"fmt"
@@ -9,13 +9,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/joatmon08/hello"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestShouldReturnHello(t *testing.T) {
 	request := httptest.NewRequest("GET", "http://myapp/hello", nil)
 	writer := httptest.NewRecorder()
-	Hello(writer, request)
+	hello.Hello(writer, request)
 	response := writer.Result()
 	body, _ := ioutil.ReadAll(response.Body)
 	assert.Equal(t, http.StatusOK, response.StatusCode, "Response should be ok")
@@ -25,7 +26,7 @@ func TestShouldReturnHello(t *testing.T) {
 func TestShouldReturnHealth(t *testing.T) {
 	request := httptest.NewRequest("GET", "http://myapp/health", nil)
 	writer := httptest.NewRecorder()
-	Health(writer, request)
+	hello.Health(writer, request)
 	response := writer.Result()
 	body, _ := ioutil.ReadAll(response.Body)
 	assert.Equal(t, http.StatusOK, response.StatusCode, "Response should be ok")
@@ -35,7 +36,7 @@ func TestShouldReturnHealth(t *testing.T) {
 func TestShouldReturnErrorForPhone(t *testing.T) {
 	request := httptest.NewRequest("GET", "http://myapp/phone", nil)
 	writer := httptest.NewRecorder()
-	Phone(writer, request)
+	hello.Phone(writer, request)
 	response := writer.Result()
 	body, _ := ioutil.ReadAll(response.Body)
 	assert.Equal(t, http.StatusInternalServerError, response.StatusCode, "Response should return error code")
@@ -55,7 +56,7 @@ func TestShouldReturnSuccessForPhone(t *testing.T) {
 
 	request := httptest.NewRequest("GET", requestURL, nil)
 	writer := httptest.NewRecorder()
-	Phone(writer, request)
+	hello.Phone(writer, request)
 	response := writer.Result()
 	body, _ := ioutil.ReadAll(response.Body)
 	assert.Equal(t, http.StatusOK, response.StatusCode, "Response should return ok")
@@ -67,7 +68,7 @@ func TestShouldGenerateCPU(t *testing.T) {
 	request := httptest.NewRequest("GET", "http://myapp/cpu?testTime=5s", nil)
 	writer := httptest.NewRecorder()
 
-	GenerateCPU(writer, request)
+	hello.GenerateCPU(writer, request)
 	elapsed := time.Since(start)
 	elapsedSeconds := fmt.Sprintf("%.0fs", elapsed.Seconds())
 
@@ -79,8 +80,7 @@ func TestShouldGenerateCPU(t *testing.T) {
 func TestShouldReturnNotFound(t *testing.T) {
 	request := httptest.NewRequest("GET", "http://myapp/nonexistent", nil)
 	writer := httptest.NewRecorder()
-
-	NotFound(writer, request)
+	hello.NotFound(writer, request)
 
 	response := writer.Result()
 	assert.Equal(t, http.StatusNotFound, response.StatusCode, "Response should return not found")

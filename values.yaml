@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: joatmon08/hello
-  tag: 20-31851a7eedd4efb01cbe2ba4d5baff278ff31bdd
+  tag: 26-89dfda5b0908a91c92fdb261733d5bfcd5f0f67c
   pullPolicy: Always
 
 nameOverride: ""

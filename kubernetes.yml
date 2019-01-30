@@ -15,6 +15,9 @@ spec:
       labels:
         app: helloworld
     spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 2000
       containers:
       - name: helloworld
         image: joatmon08/hello:latest
@@ -26,6 +29,8 @@ spec:
         - containerPort: 8002
           name: metrics
           protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service

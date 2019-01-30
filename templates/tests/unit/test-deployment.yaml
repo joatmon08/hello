@@ -30,3 +30,8 @@ tests:
           path: spec.template.spec.containers[0].livenessProbe
       - isNotNull:
           path: spec.template.spec.containers[0].readinessProbe
+      - isNotNull:
+          path: spec.template.spec.securityContext
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false

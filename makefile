@@ -8,7 +8,8 @@ setup:
 	helm plugin install https://github.com/lrills/helm-unittest
 
 inttest:
-	helm install --name testing .
+	helm install --name testing --namespace todaystest .
+	sleep 30
 	helm test --cleanup testing
 	helm del --purge testing
 

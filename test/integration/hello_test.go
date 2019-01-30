@@ -26,7 +26,6 @@ func setup() error {
 
 func TestMain(m *testing.M) {
 	if err := setup(); err != nil {
-		fmt.Errorf(err.Error())
 		os.Exit(1)
 	}
 	os.Exit(m.Run())

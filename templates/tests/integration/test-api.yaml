@@ -16,4 +16,6 @@ spec:
       env:
         - name: HELLO_ENDPOINT
           value: http://{{ include "hello.fullname" . }}
+      securityContext:
+        allowPrivilegeEscalation: false
   restartPolicy: Never

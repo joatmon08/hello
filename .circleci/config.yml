@@ -30,7 +30,7 @@ jobs:
           name: Install dependencies
           command: dep ensure
       - run:
-          name: Build container
+          name: Build application container
           command: |
             echo $DOCKER_HUB_KEY | docker login -u $DOCKER_HUB_USER --password-stdin
             CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
@@ -38,6 +38,13 @@ jobs:
             docker tag $LIBRARY/$CONTAINER_NAME:latest $LIBRARY/$CONTAINER_NAME:$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
             docker push $LIBRARY/$CONTAINER_NAME:$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
             docker push $LIBRARY/$CONTAINER_NAME:latest
+      - run:
+          name: Build integration test container
+          command: |
+            docker build -t joatmon08/hello:integration-tests -f Dockerfile.test .
+            docker tag $LIBRARY/$CONTAINER_NAME:integration-tests $LIBRARY/$CONTAINER_NAME:integration-tests-$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
+            docker push $LIBRARY/$CONTAINER_NAME:integration-tests-$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
+            docker push $LIBRARY/$CONTAINER_NAME:integration-tests
 
 workflows:
   version: 2

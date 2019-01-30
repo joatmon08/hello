@@ -18,6 +18,7 @@ spec:
       containers:
       - name: helloworld
         image: joatmon08/hello:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8001
           name: http
@@ -36,9 +37,7 @@ spec:
   ports:
   - name: http
     protocol: TCP
-    port: 8001
-  - name: metrics
-    protocol: TCP
-    port: 8002
+    port: 80
+    targetPort: 8001
   selector:
     app: helloworld

@@ -10,7 +10,7 @@ Just a simple app, serving on two ports. Use for multi-post testing.
 | :8002     | /health | Returns I'm healthy! |
 
 ## Build
-Run `./build.sh` to build the binary and create a Docker image.
+Run `go build main.go` to build the binary.
 
 ## Run
 To run as a container, use

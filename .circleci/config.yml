@@ -45,6 +45,38 @@ jobs:
             docker tag $LIBRARY/$CONTAINER_NAME:integration-tests $LIBRARY/$CONTAINER_NAME:integration-tests-$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
             docker push $LIBRARY/$CONTAINER_NAME:integration-tests-$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
             docker push $LIBRARY/$CONTAINER_NAME:integration-tests
+      - run:
+          name: store image version
+          command: |
+            mkdir /tmp/build
+            echo "IMAGE_VERSION=$CIRCLE_BUILD_NUM-$CIRCLE_SHA1" > /tmp/build/version.env
+      - persist_to_workspace:
+          name: persist version across jobs
+          root: /tmp/build
+          paths:
+            - version.env
+
+  security:
+    <<: *defaults
+    docker:
+      - image: circleci/ruby:2.5
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: install dependencies
+          command: bundle install
+      - run:
+          name: Test container
+          command: |
+            source version.env
+            echo $DOCKER_HUB_KEY | docker login -u $DOCKER_HUB_USER --password-stdin
+            docker pull $LIBRARY/$CONTAINER_NAME:$IMAGE_VERSION
+            CID="$(docker run -d -v /var/run/docker.sock:/var/run/docker.sock:ro $LIBRARY/$CONTAINER_NAME:$IMAGE_VERSION)"
+            inspec exec profiles/hello -t docker://$CID
+            docker rm -f $CID
 
 workflows:
   version: 2
@@ -54,3 +86,6 @@ workflows:
       - build:
           requires:
             - test
+      - security:
+          requires:
+            - build

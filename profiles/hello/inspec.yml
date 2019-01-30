@@ -1,0 +1,8 @@
+---
+name: hello
+title: validate image used for joatmon08/hello application
+summary: verify container settings
+version: 1.0.0
+maintainer: Rosemary Wang
+copyright: Rosemary Wang
+license: Apache-2.0

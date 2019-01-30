@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "hello.fullname" . }}-test-connection"
+  labels:
+    app.kubernetes.io/name: {{ include "hello.name" . }}
+    helm.sh/chart: {{ include "hello.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: integration-tests
+      image: joatmon08/hello:integration-tests
+      env:
+        - name: HELLO_ENDPOINT
+          value: http://{{ include "hello.fullname" . }}
+  restartPolicy: Never

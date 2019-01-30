@@ -1,0 +1,11 @@
+suite: test tagging & naming
+templates:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+tests:
+  - it: should work
+    asserts:
+      - matchRegex:
+          path: metadata.name
+          pattern: -hello$

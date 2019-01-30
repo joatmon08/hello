@@ -3,13 +3,24 @@ version: 2
 
 defaults: &defaults
   docker:
-    - image: circleci/golang:1.10
+    - image: circleci/golang:1.11
   working_directory: /go/src/github.com/joatmon08/hello
   environment:
     LIBRARY: joatmon08
     CONTAINER_NAME: hello
 
 jobs:
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: dep ensure
+      - run:
+          name: Test application
+          command: go test github.com/joatmon08/hello
+
   build:
     <<: *defaults
     steps:
@@ -32,4 +43,7 @@ workflows:
   version: 2
   hello:
     jobs:
-      - build
+      - test
+      - build:
+          requires:
+            - test

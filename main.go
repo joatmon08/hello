@@ -21,14 +21,14 @@ func main() {
 	finish := make(chan bool)
 
 	server8001 := mux.NewRouter()
-	server8001.HandleFunc("/hello", hello)
-	server8001.HandleFunc("/phone", phone)
-	server8001.HandleFunc("/cpu", generateCPU)
-	server8001.NotFoundHandler = http.HandlerFunc(notFound)
+	server8001.HandleFunc("/hello", Hello)
+	server8001.HandleFunc("/phone", Phone)
+	server8001.HandleFunc("/cpu", GenerateCPU)
+	server8001.NotFoundHandler = http.HandlerFunc(NotFound)
 
 	server8002 := mux.NewRouter()
-	server8002.HandleFunc("/health", health)
-	server8002.NotFoundHandler = http.HandlerFunc(notFound)
+	server8002.HandleFunc("/health", Health)
+	server8002.NotFoundHandler = http.HandlerFunc(NotFound)
 
 	go func() {
 		log.Fatal(http.ListenAndServe(":8001", server8001))
@@ -41,7 +41,7 @@ func main() {
 	<-finish
 }
 
-func generateCPU(w http.ResponseWriter, r *http.Request) {
+func GenerateCPU(w http.ResponseWriter, r *http.Request) {
 	var testTime time.Duration
 	if r.URL.Query().Get("testTime") != "" {
 		testTime, _ = time.ParseDuration(r.URL.Query().Get("testTime"))
@@ -72,7 +72,7 @@ func generateCPU(w http.ResponseWriter, r *http.Request) {
 	close(done)
 }
 
-func notFound(w http.ResponseWriter, r *http.Request) {
+func NotFound(w http.ResponseWriter, r *http.Request) {
 	log.WithFields(log.Fields{
 		"uri":    r.URL.Path,
 		"method": r.Method,
@@ -82,7 +82,7 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("API Endpoint Not Found"))
 }
 
-func hello(w http.ResponseWriter, r *http.Request) {
+func Hello(w http.ResponseWriter, r *http.Request) {
 	log.WithFields(log.Fields{
 		"uri":    r.URL.Path,
 		"method": r.Method,
@@ -91,7 +91,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello World!"))
 }
 
-func health(w http.ResponseWriter, r *http.Request) {
+func Health(w http.ResponseWriter, r *http.Request) {
 	log.WithFields(log.Fields{
 		"uri":    r.URL.Path,
 		"method": r.Method,
@@ -100,7 +100,7 @@ func health(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("I'm healthy!"))
 }
 
-func phone(w http.ResponseWriter, r *http.Request) {
+func Phone(w http.ResponseWriter, r *http.Request) {
 	var targetService string
 	if r.URL.Query().Get("targetService") != "" {
 		targetService = r.URL.Query().Get("targetService")

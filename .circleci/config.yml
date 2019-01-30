@@ -60,6 +60,7 @@ jobs:
     <<: *defaults
     docker:
       - image: circleci/ruby:2.5
+    working_directory: ~/hello
     steps:
       - checkout
       - setup_remote_docker

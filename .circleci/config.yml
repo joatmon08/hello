@@ -1,5 +1,5 @@
 ---
-version: 2
+version: 2.1
 
 orbs:
   vulnerability-checker: whitesource/vulnerability-checker@19.9.2
@@ -53,6 +53,11 @@ jobs:
           paths:
             - version.env
 
+  security:
+    <<: *defaults
+    steps:
+      - vulnerability-checker/scan
+
   production:
     <<: *defaults
     steps:
@@ -69,17 +74,17 @@ workflows:
       - build:
           requires:
             - test
-      - vulnerability-checker/scan:
+      - security:
           requires:
             - build
       - approver-1:
           type: approval
           requires:
-            - vulnerability-checker/scan
+            - security
       - approver-2:
           type: approval
           requires:
-            - vulnerability-checker/scan
+            - security
       - production:
           requires:
             - approver-1

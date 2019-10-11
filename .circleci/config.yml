@@ -16,7 +16,9 @@ jobs:
       - checkout
       - run:
           name: Test application
-          command: go test github.com/joatmon08/hello/test/unit
+          command: |
+            go mod download
+            go test github.com/joatmon08/hello/test/unit
 
   build:
     <<: *defaults

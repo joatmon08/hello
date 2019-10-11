@@ -2,6 +2,12 @@ build:
 	docker build -t hello:local .
 	docker build -t hello:test -f Dockerfile.test .
 
+binary:
+	go build .
+
+unit:
+	go test ./test/unit/... -v
+
 setup:
 	helm version
 	helm init

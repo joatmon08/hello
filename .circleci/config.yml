@@ -17,8 +17,7 @@ jobs:
       - run:
           name: Test application
           command: |
-            go mod download
-            go test github.com/joatmon08/hello/test/unit
+            go test -tags unit ./...
 
   build:
     <<: *defaults

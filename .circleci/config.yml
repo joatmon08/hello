@@ -77,11 +77,11 @@ workflows:
       - security:
           requires:
             - build
-      - hold-approver-1:
+      - approver-1:
           type: approval
           requires:
             - security
-      - hold-approver-2:
+      - approver-2:
           type: approval
           requires:
             - security

@@ -53,25 +53,6 @@ jobs:
           paths:
             - version.env
 
-  security:
-    steps:
-      - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: install dependencies
-          command: bundle install
-      - run:
-          name: Test container
-          command: |
-            source /tmp/workspace/version.env
-            echo $DOCKER_HUB_KEY | docker login -u $DOCKER_HUB_USER --password-stdin
-            docker pull $LIBRARY/$CONTAINER_NAME:$IMAGE_VERSION
-            CID="$(docker run -d -v /var/run/docker.sock:/var/run/docker.sock:ro $LIBRARY/$CONTAINER_NAME:$IMAGE_VERSION)"
-            inspec exec profiles/hello -t docker://$CID
-            docker rm -f $CID
-
   production:
     <<: *defaults
     steps:

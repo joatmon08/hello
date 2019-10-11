@@ -4,7 +4,6 @@ version: 2
 defaults: &defaults
   docker:
     - image: circleci/golang:1.12
-  working_directory: /go/src/github.com/joatmon08/hello
   environment:
     LIBRARY: joatmon08
     CONTAINER_NAME: hello

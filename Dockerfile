@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.12
 
 LABEL maintainer="Rosemary Wang"
 

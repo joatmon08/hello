@@ -1,12 +1,19 @@
-FROM alpine:latest
+FROM golang:latest
 
-RUN addgroup -g 2000 appuser && \
-    adduser -D -u 1000 -G appuser appuser
+LABEL maintainer="Rosemary Wang"
 
-COPY hello /usr/local/bin/
+WORKDIR /app
 
-RUN chmod +x /usr/local/bin/hello
+COPY go.mod go.sum ./
 
-USER appuser
+RUN go mod download
 
-ENTRYPOINT [ "hello" ]
+COPY . .
+
+RUN go build -o hello .
+
+EXPOSE 8001
+EXPOSE 8002
+
+# Command to run the executable
+CMD ["./hello"]

@@ -1,6 +1,9 @@
 ---
 version: 2
 
+orbs:
+  vulnerability-checker: whitesource/vulnerability-checker@19.9.2
+
 defaults: &defaults
   docker:
     - image: circleci/golang:1.12
@@ -51,10 +54,6 @@ jobs:
             - version.env
 
   security:
-    <<: *defaults
-    docker:
-      - image: circleci/ruby:2.5
-    working_directory: ~/hello
     steps:
       - checkout
       - setup_remote_docker
@@ -89,17 +88,17 @@ workflows:
       - build:
           requires:
             - test
-      - security:
+      - vulnerability-checker/scan:
           requires:
             - build
       - approver-1:
           type: approval
           requires:
-            - security
+            - vulnerability-checker/scan
       - approver-2:
           type: approval
           requires:
-            - security
+            - vulnerability-checker/scan
       - production:
           requires:
             - approver-1

@@ -5,8 +5,8 @@ RUN addgroup -g 2000 appuser && \
 
 COPY hello /usr/local/bin/
 
-RUN chmod +x /usr/local/bin/main
+RUN chmod +x /usr/local/bin/hello
 
 USER appuser
 
-ENTRYPOINT [ "main" ]
+ENTRYPOINT [ "hello" ]

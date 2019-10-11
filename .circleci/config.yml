@@ -56,7 +56,10 @@ jobs:
   security:
     <<: *defaults
     steps:
-      - vulnerability-checker/scan
+      - run:
+          name: prod
+          command: |
+            echo "Security Check"
 
   production:
     <<: *defaults
@@ -75,6 +78,8 @@ workflows:
           requires:
             - test
       - security:
+          steps:
+            - vulnerability-checker/scan
           requires:
             - build
       - approver-1:

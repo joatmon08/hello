@@ -1,3 +1,3 @@
 source 'https://rubygems.org'
 
-gem 'inspec', '3.4.1'
+gem 'inspec', '4.26.4'

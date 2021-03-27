@@ -6,7 +6,10 @@ orbs:
 
 defaults: &defaults
   docker:
-    - image: circleci/golang:1.12
+    - image: circleci/golang:1.15
+      auth:
+        username: joatmon08
+        password: $DOCKER_HUB_KEY
   environment:
     LIBRARY: joatmon08
     CONTAINER_NAME: hello
@@ -30,23 +33,15 @@ jobs:
           name: Build application container
           command: |
             echo $DOCKER_HUB_KEY | docker login -u $DOCKER_HUB_USER --password-stdin
-            CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o hello .
-            docker build -t $LIBRARY/$CONTAINER_NAME:latest .
-            docker tag $LIBRARY/$CONTAINER_NAME:latest $LIBRARY/$CONTAINER_NAME:$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
-            docker push $LIBRARY/$CONTAINER_NAME:$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
+            docker build --build-arg version=$CIRCLE_BUILD_NUM -t $LIBRARY/$CONTAINER_NAME:$CIRCLE_BUILD_NUM .
+            docker tag $LIBRARY/$CONTAINER_NAME:$CIRCLE_BUILD_NUM $LIBRARY/$CONTAINER_NAME:latest
+            docker push $LIBRARY/$CONTAINER_NAME:$CIRCLE_BUILD_NUM
             docker push $LIBRARY/$CONTAINER_NAME:latest
-      - run:
-          name: Build integration test container
-          command: |
-            docker build -t joatmon08/hello:integration-tests -f Dockerfile.test .
-            docker tag $LIBRARY/$CONTAINER_NAME:integration-tests $LIBRARY/$CONTAINER_NAME:integration-tests-$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
-            docker push $LIBRARY/$CONTAINER_NAME:integration-tests-$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
-            docker push $LIBRARY/$CONTAINER_NAME:integration-tests
       - run:
           name: store image version
           command: |
             mkdir /tmp/build
-            echo "IMAGE_VERSION=$CIRCLE_BUILD_NUM-$CIRCLE_SHA1" > /tmp/build/version.env
+            echo "IMAGE_VERSION=$CIRCLE_BUILD_NUM" > /tmp/build/version.env
       - persist_to_workspace:
           name: persist version across jobs
           root: /tmp/build
